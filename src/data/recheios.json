@@ -1,0 +1,55 @@
+{
+  "categorias": [
+    {
+      "nome": "Nobre",
+      "recheios": [
+        "Brigadeiro Branco c/ Geleia de Frutas Vermelhas",
+        "Brigadeiro Belga c/ Nutella",
+        "Camafeu de Nozes",
+        "Camafeu c/ Baba de Moça",
+        "Camafeu c/ Geleia de Damasco",
+        "Doce de Leite c/ Nozes",
+        "Ganache (ao leite / meio amargo)",
+        "Pistache",
+        "Pistache c/ Baba de Moça",
+        "Pistache c/ Geleia de Damasco",
+        "Pistache c/ Geleia de Frutas Vermelhas"
+      ]
+    },
+    {
+      "nome": "Gourmet",
+      "recheios": [
+        "Beijinho c/ Doce de Leite",
+        "Beijinho c/ Morango",
+        "Brigadeiro Branco c/ Morango",
+        "Brigadeiro Belga c/ Morango",
+        "Creme c/ Abacaxi e Coco",
+        "Choconinho",
+        "Doce de Leite c/ Ameixa",
+        "Dois Amores c/ praliné de Castanha de Caju",
+        "Floresta Negra",
+        "Mousse de Chocolate",
+        "Mousse de Chocolate c/ Cereja",
+        "Mousse de Limão Siciliano",
+        "Mousse de Maracujá",
+        "Ninho com Abacaxi",
+        "Ninho com Morango",
+        "Ninho c/ Nutella",
+        "Prestígio"
+      ]
+    },
+    {
+      "nome": "Tradicional",
+      "recheios": [
+        "Beijinho",
+        "Brigadeiro Branco",
+        "Brigadeiro de Limão Siciliano",
+        "Brigadeiro de Maracujá",
+        "Brigadeiro de Paçoca",
+        "Brigadeiro de Coco Queimado",
+        "Dois Amores",
+        "Leite Ninho (Aerado/brigadeiro)"
+      ]
+    }
+  ]
+}

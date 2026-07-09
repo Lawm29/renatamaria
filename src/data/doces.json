@@ -1,0 +1,55 @@
+{
+  "categorias": [
+    {
+      "nome": "Tradicionais",
+      "doces": [
+        "Beijinho",
+        "Brigadeiro",
+        "Cajuzinho",
+        "Leite Ninho"
+      ]
+    },
+    {
+      "nome": "Gourmet",
+      "doces": [
+        "Baianinho",
+        "Bicho de Pé",
+        "Churros Brûlée",
+        "Casadinho",
+        "Limão Siciliano",
+        "Ninho c/ Nutella",
+        "Amendoim c/ Nutella",
+        "Brigadeiro Belga",
+        "Brigadeiro de Pistache",
+        "Cookies c/ Nutella",
+        "Palha Italiana",
+        "Romeu e Julieta"
+      ]
+    },
+    {
+      "nome": "Finos (Castanhas)",
+      "doces": [
+        "Brigadeiro Branco c/ lâminas de amêndoas",
+        "Bombom amendoim c/ caramelo salgado",
+        "Bombom de Avelã",
+        "Bombom de Cookies c/ Nutella",
+        "Camafeu Tradicional c/ Chocolate",
+        "Crocante de Amêndoas",
+        "Crocante de Nozes",
+        "Crocante de Pistache"
+      ]
+    },
+    {
+      "nome": "Finos (Frutas)",
+      "doces": [
+        "Bombom de Cereja",
+        "Bombom Mousse Limão Siciliano",
+        "Bombom Mousse Maracujá",
+        "Bombom de Abacaxi com Coco",
+        "Bombom de Morango",
+        "Bombom de Uva",
+        "Bombom Parmesão c/ Goiabada"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+[
+  {
+    "id": "P",
+    "nome": "Pequeno",
+    "tamanho": "15 cm",
+    "fatias": 12,
+    "peso": "1,5 a 2,1 kg",
+    "image": "/images/tamanhos/p.jpg"
+  },
+  {
+    "id": "M",
+    "nome": "Médio",
+    "tamanho": "19 cm",
+    "fatias": 18,
+    "peso": "2,5 a 3 kg",
+    "image": "/images/tamanhos/m.jpg"
+  },
+  {
+    "id": "G",
+    "nome": "Grande",
+    "tamanho": "22 cm",
+    "fatias": 30,
+    "peso": "3,5 a 4 kg",
+    "image": "/images/tamanhos/g.jpg"
+  },
+  {
+    "id": "GG",
+    "nome": "Extra Grande",
+    "tamanho": "25 cm",
+    "fatias": 50,
+    "peso": "4,5 a 5 kg",
+    "image": "/images/tamanhos/gg.jpg"
+  },
+  {
+    "id": "EG",
+    "nome": "Especial Grande",
+    "tamanho": "30 cm",
+    "fatias": 60,
+    "peso": "5 a 6 kg",
+    "image": "/images/tamanhos/eg.jpg"
+  }
+]
