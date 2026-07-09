@@ -27,6 +27,7 @@ export default function PedidoPage() {
     nome: '',
     whatsapp: '',
     dataEntrega: '',
+    tipoLocal: null,
     rua: '',
     bairro: '',
     cidade: '',
@@ -97,7 +98,7 @@ export default function PedidoPage() {
 
   const handleConfirm = async () => {
     setIsSending(true);
-    
+
     try {
       const orderData = {
         bolos,
@@ -163,6 +164,7 @@ export default function PedidoPage() {
                 nome: '',
                 whatsapp: '',
                 dataEntrega: '',
+                tipoLocal: null,
                 rua: '',
                 bairro: '',
                 cidade: '',
@@ -183,7 +185,7 @@ export default function PedidoPage() {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4 max-w-3xl">
         <StepIndicator currentStep={step} totalSteps={4} />
-        
+
         <div className="bg-white rounded-2xl p-6 shadow-lg">
           {step === 1 && (
             <CategoriaSelector
@@ -193,7 +195,7 @@ export default function PedidoPage() {
               onNext={handleNextStep}
             />
           )}
-          
+
           {step === 2 && (
             <>
               {categoriasSelecionadas[configIndex] === 'bolo' && (
@@ -224,7 +226,7 @@ export default function PedidoPage() {
               )}
             </>
           )}
-          
+
           {step === 3 && (
             <ContactForm
               bolos={bolos}
@@ -233,7 +235,7 @@ export default function PedidoPage() {
               onBack={handlePrevStep}
             />
           )}
-          
+
           {step === 4 && (
             <OrderSummary
               bolos={bolos}

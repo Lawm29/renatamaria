@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { readFileSync, writeFileSync, existsSync } from 'fs';
-import { join } from 'path';
+import { redis } from '@/lib/redis';
+
+const ORDERS_KEY = 'pedidos';
 
 interface Pedido {
   id: string;
@@ -22,33 +23,24 @@ interface Pedido {
   };
 }
 
-const DB_PATH = join(process.cwd(), 'src', 'data', 'pedidos.json');
-
-function getPedidos(): Pedido[] {
-  if (!existsSync(DB_PATH)) {
-    return [];
-  }
-  try {
-    const data = readFileSync(DB_PATH, 'utf-8');
-    return JSON.parse(data);
-  } catch {
-    return [];
-  }
+async function getPedidos(): Promise<Pedido[]> {
+  const data = await redis.get<Pedido[]>(ORDERS_KEY);
+  return data || [];
 }
 
-function savePedidos(pedidos: Pedido[]) {
-  writeFileSync(DB_PATH, JSON.stringify(pedidos, null, 2));
+async function savePedidos(pedidos: Pedido[]) {
+  await redis.set(ORDERS_KEY, pedidos);
 }
 
 export async function GET() {
-  const pedidos = getPedidos();
+  const pedidos = await getPedidos();
   return NextResponse.json(pedidos);
 }
 
 export async function POST(request: NextRequest) {
   try {
     const data = await request.json();
-    
+
     const pedido: Pedido = {
       id: Date.now().toString(),
       dataPedido: new Date().toISOString(),
@@ -56,7 +48,9 @@ export async function POST(request: NextRequest) {
       cliente: {
         nome: data.formData.nome,
         whatsapp: data.formData.whatsapp,
-        endereco: `${data.formData.rua}, ${data.formData.bairro} - ${data.formData.cidade}/${data.formData.estado} - CEP: ${data.formData.cep}`,
+        endereco: data.formData.tipoLocal === 'barretos'
+          ? 'Barretos - Retirada'
+          : `${data.formData.rua}, ${data.formData.bairro} - ${data.formData.cidade}/${data.formData.estado} - CEP: ${data.formData.cep}`,
       },
       categorias: data.categorias,
       bolos: data.bolos,
@@ -69,9 +63,9 @@ export async function POST(request: NextRequest) {
       },
     };
 
-    const pedidos = getPedidos();
+    const pedidos = await getPedidos();
     pedidos.unshift(pedido);
-    savePedidos(pedidos);
+    await savePedidos(pedidos);
 
     return NextResponse.json({ success: true, id: pedido.id });
   } catch (error) {
@@ -86,9 +80,9 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const data = await request.json();
-    const { id, status } = data;
+    const { id, ...updateData } = data;
 
-    const pedidos = getPedidos();
+    const pedidos = await getPedidos();
     const index = pedidos.findIndex((p) => p.id === id);
 
     if (index === -1) {
@@ -98,14 +92,63 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    pedidos[index].status = status;
-    savePedidos(pedidos);
+    if (updateData.status) {
+      pedidos[index].status = updateData.status;
+    }
+
+    if (updateData.dataEntrega) {
+      pedidos[index].dataEntrega = updateData.dataEntrega;
+    }
+
+    if (updateData.cliente) {
+      pedidos[index].cliente = { ...pedidos[index].cliente, ...updateData.cliente };
+    }
+
+    if (updateData.bolos) {
+      pedidos[index].bolos = updateData.bolos;
+    }
+
+    if (updateData.bolosFalsos) {
+      pedidos[index].bolosFalsos = updateData.bolosFalsos;
+    }
+
+    if (updateData.doces) {
+      pedidos[index].doces = updateData.doces;
+    }
+
+    await savePedidos(pedidos);
 
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Erro ao atualizar pedido:', error);
     return NextResponse.json(
       { success: false, error: 'Erro ao atualizar pedido' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const { id } = await request.json();
+
+    const pedidos = await getPedidos();
+    const filteredPedidos = pedidos.filter((p) => p.id !== id);
+
+    if (filteredPedidos.length === pedidos.length) {
+      return NextResponse.json(
+        { success: false, error: 'Pedido não encontrado' },
+        { status: 404 }
+      );
+    }
+
+    await savePedidos(filteredPedidos);
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Erro ao apagar pedido:', error);
+    return NextResponse.json(
+      { success: false, error: 'Erro ao apagar pedido' },
       { status: 500 }
     );
   }

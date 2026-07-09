@@ -15,6 +15,7 @@ export interface FormData {
   nome: string;
   whatsapp: string;
   dataEntrega: string;
+  tipoLocal: 'barretos' | 'outras' | null;
   rua: string;
   bairro: string;
   cidade: string;
@@ -27,6 +28,7 @@ export default function ContactForm({ bolos, doces, onSubmit, onBack }: ContactF
     nome: '',
     whatsapp: '',
     dataEntrega: '',
+    tipoLocal: null,
     rua: '',
     bairro: '',
     cidade: '',
@@ -38,12 +40,17 @@ export default function ContactForm({ bolos, doces, onSubmit, onBack }: ContactF
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const handleTipoLocal = (tipo: 'barretos' | 'outras') => {
+    setForm({ ...form, tipoLocal: tipo });
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(form);
   };
 
-  const isValid = form.nome && form.whatsapp && form.dataEntrega && form.rua && form.bairro && form.cidade && form.estado && form.cep;
+  const isValid = form.nome && form.whatsapp && form.dataEntrega && form.tipoLocal &&
+    (form.tipoLocal === 'barretos' || (form.rua && form.bairro && form.cidade && form.estado && form.cep));
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -51,127 +58,177 @@ export default function ContactForm({ bolos, doces, onSubmit, onBack }: ContactF
         <h2 className="text-2xl font-bold text-[#5f9ea0]">
           Seus dados de contato
         </h2>
-        <p className="text-sm text-gray-500 mt-2">
-          Barretos: apenas retirada | Demais cidades de SP: entrega
-        </p>
       </div>
 
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Nome Completo *
+          <label className="block text-sm font-medium text-gray-700 mb-3">
+            Onde você está? *
           </label>
-          <input
-            type="text"
-            name="nome"
-            value={form.nome}
-            onChange={handleChange}
-            required
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#b8f0ed] focus:border-transparent"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            WhatsApp *
-          </label>
-          <input
-            type="tel"
-            name="whatsapp"
-            value={form.whatsapp}
-            onChange={handleChange}
-            placeholder="(00) 00000-0000"
-            required
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#b8f0ed] focus:border-transparent"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Data de Entrega *
-          </label>
-          <input
-            type="date"
-            name="dataEntrega"
-            value={form.dataEntrega}
-            onChange={handleChange}
-            required
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#b8f0ed] focus:border-transparent"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Rua e Número *
-          </label>
-          <input
-            type="text"
-            name="rua"
-            value={form.rua}
-            onChange={handleChange}
-            required
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#b8f0ed] focus:border-transparent"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Bairro *
-          </label>
-          <input
-            type="text"
-            name="bairro"
-            value={form.bairro}
-            onChange={handleChange}
-            required
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#b8f0ed] focus:border-transparent"
-          />
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Cidade *
-            </label>
-            <input
-              type="text"
-              name="cidade"
-              value={form.cidade}
-              onChange={handleChange}
-              required
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#b8f0ed] focus:border-transparent"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Estado *
-            </label>
-            <select
-              name="estado"
-              value={form.estado}
-              onChange={handleChange}
-              required
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#b8f0ed] focus:border-transparent"
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              type="button"
+              onClick={() => handleTipoLocal('barretos')}
+              className={`p-4 rounded-xl border-2 transition-all text-center ${
+                form.tipoLocal === 'barretos'
+                  ? 'border-[#5f9ea0] bg-[#b8f0ed]/20 text-[#5f9ea0]'
+                  : 'border-gray-200 hover:border-gray-300 text-gray-600'
+              }`}
             >
-              <option value="SP">São Paulo</option>
-            </select>
+              <div className="text-2xl mb-1">📍</div>
+              <div className="font-semibold">Barretos</div>
+              <div className="text-xs mt-1 opacity-70">Apenas retirada</div>
+            </button>
+            <button
+              type="button"
+              onClick={() => handleTipoLocal('outras')}
+              className={`p-4 rounded-xl border-2 transition-all text-center ${
+                form.tipoLocal === 'outras'
+                  ? 'border-[#5f9ea0] bg-[#b8f0ed]/20 text-[#5f9ea0]'
+                  : 'border-gray-200 hover:border-gray-300 text-gray-600'
+              }`}
+            >
+              <div className="text-2xl mb-1">🚚</div>
+              <div className="font-semibold">Outras cidades</div>
+              <div className="text-xs mt-1 opacity-70">Entrega em SP</div>
+            </button>
           </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            CEP *
-          </label>
-          <input
-            type="text"
-            name="cep"
-            value={form.cep}
-            onChange={handleChange}
-            placeholder="00000-000"
-            required
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#b8f0ed] focus:border-transparent"
-          />
-        </div>
+        {form.tipoLocal && (
+          <>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Nome Completo *
+              </label>
+              <input
+                type="text"
+                name="nome"
+                value={form.nome}
+                onChange={handleChange}
+                required
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#b8f0ed] focus:border-transparent"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                WhatsApp *
+              </label>
+              <input
+                type="tel"
+                name="whatsapp"
+                value={form.whatsapp}
+                onChange={handleChange}
+                placeholder="(00) 00000-0000"
+                required
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#b8f0ed] focus:border-transparent"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Data de Entrega *
+              </label>
+              <input
+                type="date"
+                name="dataEntrega"
+                value={form.dataEntrega}
+                onChange={handleChange}
+                required
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#b8f0ed] focus:border-transparent"
+              />
+            </div>
+
+            {form.tipoLocal === 'outras' && (
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Rua e Número *
+                  </label>
+                  <input
+                    type="text"
+                    name="rua"
+                    value={form.rua}
+                    onChange={handleChange}
+                    required
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#b8f0ed] focus:border-transparent"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Bairro *
+                  </label>
+                  <input
+                    type="text"
+                    name="bairro"
+                    value={form.bairro}
+                    onChange={handleChange}
+                    required
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#b8f0ed] focus:border-transparent"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Cidade *
+                    </label>
+                    <input
+                      type="text"
+                      name="cidade"
+                      value={form.cidade}
+                      onChange={handleChange}
+                      required
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#b8f0ed] focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Estado *
+                    </label>
+                    <select
+                      name="estado"
+                      value={form.estado}
+                      onChange={handleChange}
+                      required
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#b8f0ed] focus:border-transparent"
+                    >
+                      <option value="SP">São Paulo</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    CEP *
+                  </label>
+                  <input
+                    type="text"
+                    name="cep"
+                    value={form.cep}
+                    onChange={handleChange}
+                    placeholder="00000-000"
+                    required
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#b8f0ed] focus:border-transparent"
+                  />
+                </div>
+              </>
+            )}
+
+            {form.tipoLocal === 'barretos' && (
+              <div className="bg-[#b8f0ed]/10 p-4 rounded-xl text-center">
+                <p className="text-sm text-[#5f9ea0]">
+                  📍 Retirada em Barretos-SP
+                </p>
+                <p className="text-xs text-gray-500 mt-1">
+                  O endereço será informado após a confirmação do pedido
+                </p>
+              </div>
+            )}
+          </>
+        )}
       </div>
 
       <div className="flex justify-between pt-4">

@@ -40,10 +40,13 @@ interface Pedido {
 interface PedidoCardProps {
   pedido: Pedido;
   onStatusChange: (id: string, status: Pedido['status']) => void;
+  onEdit: (pedido: Pedido) => void;
+  onDelete: (id: string) => void;
 }
 
-export default function PedidoCard({ pedido, onStatusChange }: PedidoCardProps) {
+export default function PedidoCard({ pedido, onStatusChange, onEdit, onDelete }: PedidoCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const getTamanhoInfo = (id: string) => tamanhos.find((t) => t.id === id);
 
@@ -63,6 +66,11 @@ export default function PedidoCard({ pedido, onStatusChange }: PedidoCardProps) 
       [field]: !pedido.status[field],
     };
     onStatusChange(pedido.id, newStatus);
+  };
+
+  const handleDelete = () => {
+    onDelete(pedido.id);
+    setShowDeleteConfirm(false);
   };
 
   const dataPedido = new Date(pedido.dataPedido).toLocaleDateString('pt-BR');
@@ -217,6 +225,61 @@ export default function PedidoCard({ pedido, onStatusChange }: PedidoCardProps) 
               </div>
             </div>
           )}
+
+          <div className="flex gap-2 mt-4 pt-4 border-t border-gray-100">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit(pedido);
+              }}
+              className="flex-1 px-4 py-2 text-sm font-medium text-[#5f9ea0] bg-[#b8f0ed]/20 rounded-lg hover:bg-[#b8f0ed]/30 transition-colors"
+            >
+              Editar
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowDeleteConfirm(true);
+              }}
+              className="flex-1 px-4 py-2 text-sm font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
+            >
+              Apagar
+            </button>
+          </div>
+        </div>
+      )}
+
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-xl">
+            <div className="text-center">
+              <div className="text-4xl mb-4">⚠️</div>
+              <h3 className="text-lg font-bold text-gray-800 mb-2">Apagar pedido?</h3>
+              <p className="text-sm text-gray-600 mb-6">
+                Tem certeza que deseja apagar o pedido de <strong>{pedido.cliente.nome}</strong>?
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowDeleteConfirm(false);
+                  }}
+                  className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete();
+                  }}
+                  className="flex-1 px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-lg hover:bg-red-600 transition-colors"
+                >
+                  Apagar
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>
