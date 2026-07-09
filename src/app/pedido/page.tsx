@@ -34,6 +34,7 @@ export default function PedidoPage() {
     cep: '',
   });
   const [isConfirmed, setIsConfirmed] = useState(false);
+  const [isSending, setIsSending] = useState(false);
 
   const toggleCategoria = (id: string) => {
     setCategoriasSelecionadas((prev) =>
@@ -94,58 +95,36 @@ export default function PedidoPage() {
     setStep(4);
   };
 
-  const handleConfirm = () => {
-    const phone = '5517981843759';
+  const handleConfirm = async () => {
+    setIsSending(true);
     
-    let message = '🎂 *Pedido Renata Maria*\n\n';
-    
-    if (bolos.length > 0) {
-      message += '*Bolos:*\n';
-      bolos.forEach((bolo, index) => {
-        const tipo = bolo.tipo === 'artistico' ? 'Bolo Artístico (comestível)' : 'Bolo';
-        message += `${tipo} ${index + 1}:\n`;
-        message += `- Tamanho: ${bolo.tamanho}\n`;
-        message += `- Recheio: ${bolo.recheio}\n`;
-        message += `- Cobertura: ${bolo.cobertura}\n`;
-        if (bolo.observacoes) {
-          message += `- Obs: ${bolo.observacoes}\n`;
-        }
-        message += '\n';
+    try {
+      const response = await fetch('/api/send-order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          bolos,
+          bolosFalsos,
+          doces,
+          formData,
+        }),
       });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setIsConfirmed(true);
+      } else {
+        alert('Erro ao enviar pedido. Por favor, tente novamente.');
+      }
+    } catch (error) {
+      console.error('Erro:', error);
+      alert('Erro ao enviar pedido. Por favor, tente novamente.');
+    } finally {
+      setIsSending(false);
     }
-    
-    if (bolosFalsos.length > 0) {
-      message += '*Bolos Falsos (Decoração):*\n';
-      bolosFalsos.forEach((bolo, index) => {
-        message += `Bolo Falso ${index + 1}:\n`;
-        message += `- Andares: ${bolo.andares}\n`;
-        message += `- Descrição: ${bolo.descricao}\n`;
-        if (bolo.observacoes) {
-          message += `- Obs: ${bolo.observacoes}\n`;
-        }
-        message += '\n';
-      });
-    }
-    
-    if (doces.length > 0) {
-      message += '*Doces:*\n';
-      doces.forEach((doce) => {
-        message += `- ${doce.nome} x${doce.quantidade}\n`;
-      });
-      message += '\n';
-    }
-    
-    message += '*Dados de Contato e Endereço:*\n';
-    message += `- Nome: ${formData.nome}\n`;
-    message += `- WhatsApp: ${formData.whatsapp}\n`;
-    message += `- Data: ${new Date(formData.dataEntrega).toLocaleDateString('pt-BR')}\n`;
-    message += `- Endereço: ${formData.rua}, ${formData.bairro} - ${formData.cidade}/${formData.estado}\n`;
-    message += `- CEP: ${formData.cep}\n`;
-    
-    const encodedMessage = encodeURIComponent(message);
-    window.location.href = `https://wa.me/${phone}?text=${encodedMessage}`;
-    
-    setIsConfirmed(true);
   };
 
   if (isConfirmed) {
@@ -251,6 +230,7 @@ export default function PedidoPage() {
               dados={formData}
               onConfirm={handleConfirm}
               onBack={handlePrevStep}
+              isSending={isSending}
             />
           )}
         </div>

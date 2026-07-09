@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import GaleriaCarrossel from '@/components/GaleriaCarrossel';
 
 export default function Home() {
   return (
@@ -81,32 +82,7 @@ export default function Home() {
       </section>
 
       {/* Galeria */}
-      <section className="py-12 bg-white">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center text-[#5f9ea0] mb-8">
-            Nossa Arte
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
-            {[
-              '/images/bolos/Captura de tela 2026-07-09 113755.png',
-              '/images/bolos/Captura de tela 2026-07-09 113859.png',
-              '/images/bolos/Captura de tela 2026-07-09 113914.png',
-              '/images/bolos/Captura de tela 2026-07-09 113925.png',
-            ].map((foto, i) => (
-              <div
-                key={i}
-                className="aspect-square bg-gray-100 rounded-xl overflow-hidden"
-              >
-                <img
-                  src={foto}
-                  alt={`Bolo ${i + 1}`}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <GaleriaCarrossel />
 
       {/* CTA */}
       <section className="py-12 bg-[#b8f0ed]/20">
