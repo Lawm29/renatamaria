@@ -29,7 +29,7 @@ export default function PedidoPage() {
     dataEntrega: '',
     rua: '',
     bairro: '',
-    cidade: 'Barretos',
+    cidade: '',
     estado: 'SP',
     cep: '',
   });
@@ -99,22 +99,34 @@ export default function PedidoPage() {
     setIsSending(true);
     
     try {
-      const response = await fetch('/api/send-order', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          bolos,
-          bolosFalsos,
-          doces,
-          formData,
+      const orderData = {
+        bolos,
+        bolosFalsos,
+        doces,
+        formData,
+        categorias: categoriasSelecionadas,
+      };
+
+      const [emailResponse, orderResponse] = await Promise.all([
+        fetch('/api/send-order', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(orderData),
         }),
-      });
+        fetch('/api/orders', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(orderData),
+        }),
+      ]);
 
-      const result = await response.json();
+      const emailResult = await emailResponse.json();
 
-      if (result.success) {
+      if (emailResult.success) {
         setIsConfirmed(true);
       } else {
         alert('Erro ao enviar pedido. Por favor, tente novamente.');

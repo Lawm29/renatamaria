@@ -24,9 +24,15 @@ export default function Header() {
         <nav className="flex items-center gap-4">
           <Link
             href="/"
-            className="text-gray-700 hover:text-[#b8f0ed] transition-colors font-medium"
+            className="text-gray-700 hover:text-[#b8f0ed] transition-colors font-medium hidden sm:block"
           >
             Início
+          </Link>
+          <Link
+            href="/pedidos"
+            className="text-gray-700 hover:text-[#b8f0ed] transition-colors font-medium hidden sm:block"
+          >
+            Meus Pedidos
           </Link>
           <Link
             href="/pedido"
