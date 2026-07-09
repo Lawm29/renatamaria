@@ -7,6 +7,7 @@ interface OrderData {
     tamanho: string;
     recheio: string;
     cobertura: string;
+    descricao?: string;
     observacoes?: string;
   }>;
   bolosFalsos: Array<{
@@ -43,6 +44,7 @@ function formatOrderEmail(data: OrderData): string {
           <p>- Tamanho: ${bolo.tamanho}</p>
           <p>- Recheio: ${bolo.recheio}</p>
           <p>- Cobertura: ${bolo.cobertura}</p>
+          ${bolo.tipo === 'artistico' && bolo.descricao ? `<p>- Descrição: ${bolo.descricao}</p>` : ''}
           ${bolo.observacoes ? `<p><em>- Obs: ${bolo.observacoes}</em></p>` : ''}
         </div>
       `;

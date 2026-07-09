@@ -40,6 +40,9 @@ export default function OrderSummary({ bolos, bolosFalsos, doces, dados, onConfi
                 </p>
                 <p className="text-sm text-gray-600">Recheio: {bolo.recheio}</p>
                 <p className="text-sm text-gray-600">Cobertura: {bolo.cobertura}</p>
+                {bolo.tipo === 'artistico' && bolo.descricao && (
+                  <p className="text-sm text-gray-600">Descrição: {bolo.descricao}</p>
+                )}
                 {bolo.observacoes && (
                   <p className="text-sm text-gray-500 italic">Obs: {bolo.observacoes}</p>
                 )}

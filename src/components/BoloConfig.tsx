@@ -17,6 +17,7 @@ export interface BoloData {
   tamanho: string;
   recheio: string;
   cobertura: string;
+  descricao?: string;
   observacoes: string;
 }
 
@@ -24,13 +25,14 @@ export default function BoloConfig({ tipo, onNext, onBack }: BoloConfigProps) {
   const [tamanho, setTamanho] = useState('');
   const [recheio, setRecheio] = useState('');
   const [cobertura, setCobertura] = useState('');
+  const [descricao, setDescricao] = useState('');
   const [observacoes, setObservacoes] = useState('');
   const [isSizeModalOpen, setIsSizeModalOpen] = useState(false);
   const [recheioCategoria, setRecheioCategoria] = useState('Nobre');
 
   const handleNext = () => {
     if (tamanho && recheio && cobertura) {
-      onNext({ tipo, tamanho, recheio, cobertura, observacoes });
+      onNext({ tipo, tamanho, recheio, cobertura, descricao, observacoes });
     }
   };
 
@@ -122,6 +124,21 @@ export default function BoloConfig({ tipo, onNext, onBack }: BoloConfigProps) {
             ))}
           </select>
         </div>
+
+        {tipo === 'artistico' && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Descrição do Bolo *
+            </label>
+            <textarea
+              value={descricao}
+              onChange={(e) => setDescricao(e.target.value)}
+              rows={4}
+              placeholder="Descreva como você gostaria que ficasse o bolo: cores, tema, decorações, referências..."
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#b8f0ed] focus:border-transparent"
+            />
+          </div>
+        )}
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
