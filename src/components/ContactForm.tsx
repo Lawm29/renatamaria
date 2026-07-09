@@ -128,7 +128,7 @@ export default function ContactForm({ bolos, doces, onSubmit, onBack }: ContactF
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Data de Entrega *
+                {form.tipoLocal === 'barretos' ? 'Data de Retirada' : 'Data de Entrega'} *
               </label>
               <input
                 type="date"

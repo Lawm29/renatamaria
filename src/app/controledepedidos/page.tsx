@@ -39,7 +39,7 @@ interface Pedido {
 
 type TabType = 'andamento' | 'concluidos';
 
-export default function PedidosPage() {
+export default function ControlePedidosPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
