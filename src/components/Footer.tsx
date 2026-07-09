@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Footer() {
   return (
@@ -41,6 +42,12 @@ export default function Footer() {
         
         <div className="border-t border-white/20 mt-6 pt-6 text-center text-sm opacity-80">
           <p>&copy; 2026 Renata Maria - Bolos e Doces Finos. Todos os direitos reservados.</p>
+          <Link 
+            href="/pedidos" 
+            className="text-xs opacity-40 hover:opacity-100 transition-opacity mt-2 inline-block"
+          >
+            Área do Administrador
+          </Link>
         </div>
       </div>
     </footer>
