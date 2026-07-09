@@ -13,7 +13,7 @@ export default function Footer() {
               alt="Renata Maria"
               width={50}
               height={50}
-              className="object-contain brightness-0 invert"
+              className="object-contain"
             />
             <div>
               <h3 className="font-bold">Renata Maria</h3>
@@ -22,7 +22,9 @@ export default function Footer() {
           </div>
           
           <div className="text-center md:text-right">
+            <p className="text-sm">Rua Trinta, 640 - Centro</p>
             <p className="text-sm">Barretos - SP</p>
+            <p className="text-sm mt-2 font-semibold">Retirada em Barretos</p>
             <p className="text-sm">Entrega em todo o estado de São Paulo</p>
             <p className="text-sm mt-2">
               <a 
