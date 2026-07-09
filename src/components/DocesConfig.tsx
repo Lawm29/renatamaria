@@ -50,10 +50,8 @@ export default function DocesConfig({ onNext, onBack }: DocesConfigProps) {
 
     if (isNaN(numValue) || numValue < 25) {
       setAvisoMinimo(nome);
-      const doce = selecionados.find((d) => d.nome === nome);
-      if (doce) {
-        setInputValues({ ...inputValues, [nome]: doce.quantidade.toString() });
-      }
+      atualizarQuantidade(nome, 25);
+      setInputValues({ ...inputValues, [nome]: '25' });
     } else {
       setAvisoMinimo(null);
       atualizarQuantidade(nome, numValue);

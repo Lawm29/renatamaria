@@ -108,33 +108,48 @@ export default function PedidoPage() {
         categorias: categoriasSelecionadas,
       };
 
-      const [emailResponse, orderResponse] = await Promise.all([
-        fetch('/api/send-order', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(orderData),
-        }),
-        fetch('/api/orders', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(orderData),
-        }),
-      ]);
+      // 1. Salvar pedido no Redis primeiro
+      const orderResponse = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData),
+      });
 
-      const emailResult = await emailResponse.json();
+      const orderResult = await orderResponse.json();
 
-      if (emailResult.success) {
-        setIsConfirmed(true);
-      } else {
-        alert('Erro ao enviar pedido. Por favor, tente novamente.');
+      if (!orderResult.success) {
+        alert('Erro ao salvar pedido. Por favor, tente novamente.');
+        return;
       }
+
+      // 2. Tentar enviar email (não bloqueante)
+      let emailFailed = false;
+      try {
+        const emailResponse = await fetch('/api/send-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(orderData),
+        });
+
+        const emailResult = await emailResponse.json();
+        emailFailed = !emailResult.success;
+
+        if (emailFailed) {
+          console.warn('Email falhou, mas pedido foi salvo:', emailResult.error);
+        }
+      } catch (emailErr) {
+        emailFailed = true;
+        console.warn('Erro ao enviar email:', emailErr);
+      }
+
+      // 3. Confirmar pedido (sempre, pois foi salvo)
+      if (emailFailed) {
+        alert('Pedido salvo com sucesso! Enviamos seu pedido, mas houve um problema com o email. Não se preocupe, recebemos seu pedido!');
+      }
+      setIsConfirmed(true);
     } catch (error) {
-      console.error('Erro:', error);
-      alert('Erro ao enviar pedido. Por favor, tente novamente.');
+      console.error('Erro ao salvar pedido:', error);
+      alert('Erro ao salvar pedido. Por favor, tente novamente.');
     } finally {
       setIsSending(false);
     }

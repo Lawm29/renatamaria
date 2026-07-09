@@ -103,6 +103,21 @@ export async function POST(request: NextRequest) {
   try {
     const data: OrderData = await request.json();
 
+    console.log('📧 Recebido pedido para enviar email:', {
+      nome: data.formData?.nome,
+      temBolos: (data.bolos || []).length > 0,
+      temBolosFalsos: (data.bolosFalsos || []).length > 0,
+      temDoces: (data.doces || []).length > 0,
+    });
+
+    if (!process.env.GMAIL_USER || !process.env.GMAIL_PASS) {
+      console.error('❌ Variáveis de ambiente GMAIL não configuradas');
+      return NextResponse.json(
+        { success: false, error: 'Configuração de email não disponível' },
+        { status: 500 }
+      );
+    }
+
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -113,18 +128,29 @@ export async function POST(request: NextRequest) {
 
     const emailHtml = formatOrderEmail(data);
 
-    await transporter.sendMail({
+    console.log('📧 Enviando email para:', process.env.GMAIL_USER);
+
+    const info = await transporter.sendMail({
       from: `"Renata Maria - Pedidos" <${process.env.GMAIL_USER}>`,
       to: process.env.GMAIL_USER,
-      subject: `Novo Pedido - ${data.formData.nome}`,
+      subject: `Novo Pedido - ${data.formData.nome || 'Sem nome'}`,
       html: emailHtml,
     });
 
-    return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error('Erro ao enviar email:', error);
+    console.log('✅ Email enviado com sucesso:', info.messageId);
+
+    return NextResponse.json({ success: true, messageId: info.messageId });
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
+    const errorStack = error instanceof Error ? error.stack : '';
+    
+    console.error('❌ Erro ao enviar email:', {
+      message: errorMessage,
+      stack: errorStack,
+    });
+    
     return NextResponse.json(
-      { success: false, error: 'Erro ao enviar pedido' },
+      { success: false, error: errorMessage },
       { status: 500 }
     );
   }
