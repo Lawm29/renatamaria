@@ -21,7 +21,7 @@ export default function DocesConfig({ onNext, onBack }: DocesConfigProps) {
   const adicionarDoce = (nome: string, categoria: string) => {
     const exists = selecionados.find((d) => d.nome === nome);
     if (!exists) {
-      setSelecionados([...selecionados, { nome, categoria, quantidade: 1 }]);
+      setSelecionados([...selecionados, { nome, categoria, quantidade: 25 }]);
     }
   };
 
@@ -30,7 +30,7 @@ export default function DocesConfig({ onNext, onBack }: DocesConfigProps) {
   };
 
   const atualizarQuantidade = (nome: string, quantidade: number) => {
-    if (quantidade < 1) {
+    if (quantidade < 25) {
       removerDoce(nome);
       return;
     }
@@ -47,7 +47,7 @@ export default function DocesConfig({ onNext, onBack }: DocesConfigProps) {
         Selecione seus doces
       </h2>
       <p className="text-center text-gray-600">
-        Clique no doce para adicioná-lo ao seu pedido
+        Clique no doce para adicioná-lo ao seu pedido (mínimo 25 unidades por tipo)
       </p>
 
       <div className="flex gap-2 flex-wrap justify-center">
@@ -107,10 +107,10 @@ export default function DocesConfig({ onNext, onBack }: DocesConfigProps) {
                   </button>
                   <input
                     type="number"
-                    min="1"
+                    min="25"
                     value={doce.quantidade}
                     onChange={(e) =>
-                      atualizarQuantidade(doce.nome, parseInt(e.target.value) || 1)
+                      atualizarQuantidade(doce.nome, parseInt(e.target.value) || 25)
                     }
                     className="w-16 text-center border border-gray-200 rounded-lg py-1"
                   />

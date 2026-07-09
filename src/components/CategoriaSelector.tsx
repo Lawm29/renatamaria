@@ -4,6 +4,7 @@ interface Categoria {
   id: string;
   nome: string;
   icone: string;
+  descricao?: string;
 }
 
 interface CategoriaSelectorProps {
@@ -28,7 +29,7 @@ export default function CategoriaSelector({
         Você pode selecionar múltiplas categorias
       </p>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {categorias.map((cat) => (
           <button
             key={cat.id}
@@ -41,6 +42,7 @@ export default function CategoriaSelector({
           >
             <span className="text-4xl block mb-2">{cat.icone}</span>
             <span className="font-semibold text-gray-700">{cat.nome}</span>
+            <p className="text-xs text-gray-500 mt-2">{cat.descricao}</p>
           </button>
         ))}
       </div>

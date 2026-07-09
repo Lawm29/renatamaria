@@ -1,19 +1,21 @@
 'use client';
 
 import { BoloData } from './BoloConfig';
+import { BoloFalsoData } from './BoloFalsoConfig';
 import { DoceSelecionado } from './DocesConfig';
 import { FormData } from './ContactForm';
 import tamanhos from '@/data/tamanhos.json';
 
 interface OrderSummaryProps {
   bolos: BoloData[];
+  bolosFalsos: BoloFalsoData[];
   doces: DoceSelecionado[];
   dados: FormData;
-  onConfirm: () => void;
+  onConfirm: (method: 'whatsapp' | 'email') => void;
   onBack: () => void;
 }
 
-export default function OrderSummary({ bolos, doces, dados, onConfirm, onBack }: OrderSummaryProps) {
+export default function OrderSummary({ bolos, bolosFalsos, doces, dados, onConfirm, onBack }: OrderSummaryProps) {
   const getTamanhoInfo = (id: string) => tamanhos.find((t) => t.id === id);
 
   return (
@@ -46,6 +48,22 @@ export default function OrderSummary({ bolos, doces, dados, onConfirm, onBack }:
         </div>
       )}
 
+      {bolosFalsos.length > 0 && (
+        <div className="bg-white rounded-xl p-4 border border-gray-200">
+          <h3 className="font-semibold text-gray-700 mb-3">Bolos Falsos</h3>
+          {bolosFalsos.map((bolo, index) => (
+            <div key={index} className="mb-3 pb-3 border-b border-gray-100 last:border-0">
+              <p className="font-medium">🎨 Bolo Falso {index + 1}</p>
+              <p className="text-sm text-gray-600">Andares: {bolo.andares}</p>
+              <p className="text-sm text-gray-600">Descrição: {bolo.descricao}</p>
+              {bolo.observacoes && (
+                <p className="text-sm text-gray-500 italic">Obs: {bolo.observacoes}</p>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
       {doces.length > 0 && (
         <div className="bg-white rounded-xl p-4 border border-gray-200">
           <h3 className="font-semibold text-gray-700 mb-3">Doces</h3>
@@ -71,7 +89,7 @@ export default function OrderSummary({ bolos, doces, dados, onConfirm, onBack }:
         </div>
       </div>
 
-      <div className="flex justify-between pt-4">
+      <div className="flex flex-col sm:flex-row justify-between gap-3 pt-4">
         <button
           type="button"
           onClick={onBack}
@@ -79,12 +97,20 @@ export default function OrderSummary({ bolos, doces, dados, onConfirm, onBack }:
         >
           Voltar
         </button>
-        <button
-          onClick={onConfirm}
-          className="px-8 py-3 rounded-full font-semibold bg-green-500 text-white hover:bg-green-600 transition-all"
-        >
-          Enviar via WhatsApp
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={() => onConfirm('email')}
+            className="flex-1 sm:flex-none px-6 py-3 rounded-full font-semibold bg-blue-500 text-white hover:bg-blue-600 transition-all"
+          >
+            📧 Email
+          </button>
+          <button
+            onClick={() => onConfirm('whatsapp')}
+            className="flex-1 sm:flex-none px-6 py-3 rounded-full font-semibold bg-green-500 text-white hover:bg-green-600 transition-all"
+          >
+            💬 WhatsApp
+          </button>
+        </div>
       </div>
     </div>
   );

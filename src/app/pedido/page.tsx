@@ -4,14 +4,16 @@ import { useState } from 'react';
 import StepIndicator from '@/components/StepIndicator';
 import CategoriaSelector from '@/components/CategoriaSelector';
 import BoloConfig, { BoloData } from '@/components/BoloConfig';
+import BoloFalsoConfig, { BoloFalsoData } from '@/components/BoloFalsoConfig';
 import DocesConfig, { DoceSelecionado } from '@/components/DocesConfig';
 import ContactForm, { FormData } from '@/components/ContactForm';
 import OrderSummary from '@/components/OrderSummary';
 
 const categorias = [
-  { id: 'bolo', nome: 'Bolo', icone: '🎂' },
-  { id: 'artistico', nome: 'Bolo Artístico', icone: '✨' },
-  { id: 'doces', nome: 'Doces', icone: '🍬' },
+  { id: 'bolo', nome: 'Bolo', icone: '🎂', descricao: 'Bolos personalizados para todas as ocasiões' },
+  { id: 'artistico', nome: 'Bolo Artístico', icone: '✨', descricao: 'Bolos comestíveis decorados com detalhes artísticos' },
+  { id: 'falso', nome: 'Bolo Falso', icone: '🎨', descricao: 'Bolos para decoração e eventos (não comestível)' },
+  { id: 'doces', nome: 'Doces', icone: '🍬', descricao: 'Brigadeiros, bombons e doces finos' },
 ];
 
 export default function PedidoPage() {
@@ -19,6 +21,7 @@ export default function PedidoPage() {
   const [categoriasSelecionadas, setCategoriasSelecionadas] = useState<string[]>([]);
   const [configIndex, setConfigIndex] = useState(0);
   const [bolos, setBolos] = useState<BoloData[]>([]);
+  const [bolosFalsos, setBolosFalsos] = useState<BoloFalsoData[]>([]);
   const [doces, setDoces] = useState<DoceSelecionado[]>([]);
   const [formData, setFormData] = useState<FormData>({
     nome: '',
@@ -63,6 +66,19 @@ export default function PedidoPage() {
     }
   };
 
+  const handleBoloFalsoNext = (data: BoloFalsoData) => {
+    const newBolosFalsos = [...bolosFalsos];
+    newBolosFalsos[configIndex] = data;
+    setBolosFalsos(newBolosFalsos);
+
+    const nextConfigIndex = configIndex + 1;
+    if (nextConfigIndex < categoriasSelecionadas.length) {
+      setConfigIndex(nextConfigIndex);
+    } else {
+      setStep(3);
+    }
+  };
+
   const handleDocesNext = (data: DoceSelecionado[]) => {
     setDoces(data);
     const nextConfigIndex = configIndex + 1;
@@ -78,19 +94,33 @@ export default function PedidoPage() {
     setStep(4);
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = (method: 'whatsapp' | 'email') => {
     const phone = '5517981843759';
+    const email = 'rmbolosedocesfinos@gmail.com';
     
     let message = '🎂 *Pedido Renata Maria*\n\n';
     
     if (bolos.length > 0) {
       message += '*Bolos:*\n';
       bolos.forEach((bolo, index) => {
-        const tipo = bolo.tipo === 'artistico' ? 'Bolo Artístico' : 'Bolo';
+        const tipo = bolo.tipo === 'artistico' ? 'Bolo Artístico (comestível)' : 'Bolo';
         message += `${tipo} ${index + 1}:\n`;
         message += `- Tamanho: ${bolo.tamanho}\n`;
         message += `- Recheio: ${bolo.recheio}\n`;
         message += `- Cobertura: ${bolo.cobertura}\n`;
+        if (bolo.observacoes) {
+          message += `- Obs: ${bolo.observacoes}\n`;
+        }
+        message += '\n';
+      });
+    }
+    
+    if (bolosFalsos.length > 0) {
+      message += '*Bolos Falsos (Decoração):*\n';
+      bolosFalsos.forEach((bolo, index) => {
+        message += `Bolo Falso ${index + 1}:\n`;
+        message += `- Andares: ${bolo.andares}\n`;
+        message += `- Descrição: ${bolo.descricao}\n`;
         if (bolo.observacoes) {
           message += `- Obs: ${bolo.observacoes}\n`;
         }
@@ -114,7 +144,13 @@ export default function PedidoPage() {
     message += `- CEP: ${formData.cep}\n`;
     
     const encodedMessage = encodeURIComponent(message);
-    window.open(`https://wa.me/${phone}?text=${encodedMessage}`, '_blank');
+    
+    if (method === 'whatsapp') {
+      window.location.href = `https://wa.me/${phone}?text=${encodedMessage}`;
+    } else {
+      const subject = encodeURIComponent('Pedido Renata Maria - ' + formData.nome);
+      window.location.href = `mailto:${email}?subject=${subject}&body=${encodedMessage}`;
+    }
     
     setIsConfirmed(true);
   };
@@ -137,6 +173,7 @@ export default function PedidoPage() {
               setCategoriasSelecionadas([]);
               setConfigIndex(0);
               setBolos([]);
+              setBolosFalsos([]);
               setDoces([]);
               setFormData({
                 nome: '',
@@ -189,6 +226,12 @@ export default function PedidoPage() {
                   onBack={handlePrevStep}
                 />
               )}
+              {categoriasSelecionadas[configIndex] === 'falso' && (
+                <BoloFalsoConfig
+                  onNext={handleBoloFalsoNext}
+                  onBack={handlePrevStep}
+                />
+              )}
               {categoriasSelecionadas[configIndex] === 'doces' && (
                 <DocesConfig
                   onNext={handleDocesNext}
@@ -210,6 +253,7 @@ export default function PedidoPage() {
           {step === 4 && (
             <OrderSummary
               bolos={bolos}
+              bolosFalsos={bolosFalsos}
               doces={doces}
               dados={formData}
               onConfirm={handleConfirm}

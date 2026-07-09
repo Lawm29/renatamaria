@@ -13,6 +13,7 @@ export default function Home() {
             width={200}
             height={200}
             className="mx-auto mb-6"
+            style={{ mixBlendMode: 'multiply' }}
           />
           <h1 className="text-4xl md:text-5xl font-bold text-[#5f9ea0] mb-4">
             Renata Maria
@@ -53,50 +54,20 @@ export default function Home() {
           <h2 className="text-3xl font-bold text-center text-[#5f9ea0] mb-8">
             Nossos Produtos
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow">
-              <div className="text-5xl text-center mb-4">🎂</div>
-              <h3 className="text-xl font-bold text-center text-[#5f9ea0] mb-2">
-                Bolos
+          <div className="max-w-2xl mx-auto">
+            <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow text-center">
+              <div className="text-6xl mb-4">🎂</div>
+              <h3 className="text-2xl font-bold text-[#5f9ea0] mb-3">
+                Bolos e Doces Finos
               </h3>
-              <p className="text-gray-600 text-center mb-4">
-                Bolos personalizados para todas as ocasiões. Escolha o tamanho, recheio e cobertura.
+              <p className="text-gray-600 mb-6 max-w-lg mx-auto">
+                Bolos personalizados, bolos artísticos comestíveis com detalhes decorativos, 
+                bolos falsos para decoração e doces finos para todas as ocasiões. 
+                Escolha o tamanho, recheio, cobertura e muito mais!
               </p>
               <Link
                 href="/pedido"
-                className="block text-center bg-[#b8f0ed]/20 text-[#5f9ea0] py-2 rounded-lg hover:bg-[#b8f0ed]/30 transition-colors font-medium"
-              >
-                Montar Pedido
-              </Link>
-            </div>
-
-            <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow">
-              <div className="text-5xl text-center mb-4">✨</div>
-              <h3 className="text-xl font-bold text-center text-[#5f9ea0] mb-2">
-                Bolos Artísticos
-              </h3>
-              <p className="text-gray-600 text-center mb-4">
-                Bolos decorados com detalhes artísticos para eventos especiais e festas temáticas.
-              </p>
-              <Link
-                href="/pedido"
-                className="block text-center bg-[#b8f0ed]/20 text-[#5f9ea0] py-2 rounded-lg hover:bg-[#b8f0ed]/30 transition-colors font-medium"
-              >
-                Montar Pedido
-              </Link>
-            </div>
-
-            <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow">
-              <div className="text-5xl text-center mb-4">🍬</div>
-              <h3 className="text-xl font-bold text-center text-[#5f9ea0] mb-2">
-                Doces Finos
-              </h3>
-              <p className="text-gray-600 text-center mb-4">
-                Brigadeiros, bombons e doces finos para festas e eventos. Tradicionais, gourmet e finos.
-              </p>
-              <Link
-                href="/pedido"
-                className="block text-center bg-[#b8f0ed]/20 text-[#5f9ea0] py-2 rounded-lg hover:bg-[#b8f0ed]/30 transition-colors font-medium"
+                className="inline-block bg-[#b8f0ed] text-white px-8 py-3 rounded-full font-semibold hover:bg-[#5f9ea0] transition-all shadow-md hover:shadow-lg"
               >
                 Montar Pedido
               </Link>
@@ -112,14 +83,19 @@ export default function Home() {
             Nossa Arte
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
-            {[1, 2, 3, 4].map((i) => (
+            {[
+              '/images/bolos/Captura de tela 2026-07-09 113755.png',
+              '/images/bolos/Captura de tela 2026-07-09 113859.png',
+              '/images/bolos/Captura de tela 2026-07-09 113914.png',
+              '/images/bolos/Captura de tela 2026-07-09 113925.png',
+            ].map((foto, i) => (
               <div
                 key={i}
                 className="aspect-square bg-gray-100 rounded-xl overflow-hidden"
               >
                 <img
-                  src={`/images/bolos/Captura de tela 2026-07-09 11375${3 + i}.png`}
-                  alt={`Bolo ${i}`}
+                  src={foto}
+                  alt={`Bolo ${i + 1}`}
                   className="w-full h-full object-cover"
                 />
               </div>
