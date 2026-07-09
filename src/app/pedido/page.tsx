@@ -56,8 +56,11 @@ export default function PedidoPage() {
   };
 
   const handleBoloNext = (data: BoloData) => {
+    const boloCount = categoriasSelecionadas.slice(0, configIndex).filter(
+      (c) => c === 'bolo' || c === 'artistico'
+    ).length;
     const newBolos = [...bolos];
-    newBolos[configIndex] = data;
+    newBolos[boloCount] = data;
     setBolos(newBolos);
 
     const nextConfigIndex = configIndex + 1;
@@ -69,8 +72,11 @@ export default function PedidoPage() {
   };
 
   const handleBoloFalsoNext = (data: BoloFalsoData) => {
+    const falsoCount = categoriasSelecionadas.slice(0, configIndex).filter(
+      (c) => c === 'falso'
+    ).length;
     const newBolosFalsos = [...bolosFalsos];
-    newBolosFalsos[configIndex] = data;
+    newBolosFalsos[falsoCount] = data;
     setBolosFalsos(newBolosFalsos);
 
     const nextConfigIndex = configIndex + 1;

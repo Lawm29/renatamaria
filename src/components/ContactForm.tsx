@@ -222,9 +222,6 @@ export default function ContactForm({ bolos, doces, onSubmit, onBack }: ContactF
                 <p className="text-sm text-[#5f9ea0]">
                   📍 Retirada em Barretos-SP
                 </p>
-                <p className="text-xs text-gray-500 mt-1">
-                  O endereço será informado após a confirmação do pedido
-                </p>
               </div>
             )}
           </>
