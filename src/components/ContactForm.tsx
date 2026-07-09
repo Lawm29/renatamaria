@@ -29,7 +29,7 @@ export default function ContactForm({ bolos, doces, onSubmit, onBack }: ContactF
     dataEntrega: '',
     rua: '',
     bairro: '',
-    cidade: 'Barretos',
+    cidade: '',
     estado: 'SP',
     cep: '',
   });
@@ -47,9 +47,14 @@ export default function ContactForm({ bolos, doces, onSubmit, onBack }: ContactF
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <h2 className="text-2xl font-bold text-center text-[#5f9ea0]">
-        Seus dados para entrega
-      </h2>
+      <div className="text-center">
+        <h2 className="text-2xl font-bold text-[#5f9ea0]">
+          Seus dados de contato
+        </h2>
+        <p className="text-sm text-gray-500 mt-2">
+          Barretos: apenas retirada | Demais cidades de SP: entrega
+        </p>
+      </div>
 
       <div className="space-y-4">
         <div>

@@ -94,9 +94,8 @@ export default function PedidoPage() {
     setStep(4);
   };
 
-  const handleConfirm = (method: 'whatsapp' | 'email') => {
+  const handleConfirm = () => {
     const phone = '5517981843759';
-    const email = 'rmbolosedocesfinos@gmail.com';
     
     let message = '🎂 *Pedido Renata Maria*\n\n';
     
@@ -136,7 +135,7 @@ export default function PedidoPage() {
       message += '\n';
     }
     
-    message += '*Dados de Entrega:*\n';
+    message += '*Dados de Contato e Endereço:*\n';
     message += `- Nome: ${formData.nome}\n`;
     message += `- WhatsApp: ${formData.whatsapp}\n`;
     message += `- Data: ${new Date(formData.dataEntrega).toLocaleDateString('pt-BR')}\n`;
@@ -144,13 +143,7 @@ export default function PedidoPage() {
     message += `- CEP: ${formData.cep}\n`;
     
     const encodedMessage = encodeURIComponent(message);
-    
-    if (method === 'whatsapp') {
-      window.location.href = `https://wa.me/${phone}?text=${encodedMessage}`;
-    } else {
-      const subject = encodeURIComponent('Pedido Renata Maria - ' + formData.nome);
-      window.location.href = `mailto:${email}?subject=${subject}&body=${encodedMessage}`;
-    }
+    window.location.href = `https://wa.me/${phone}?text=${encodedMessage}`;
     
     setIsConfirmed(true);
   };
@@ -181,7 +174,7 @@ export default function PedidoPage() {
                 dataEntrega: '',
                 rua: '',
                 bairro: '',
-                cidade: 'Barretos',
+                cidade: '',
                 estado: 'SP',
                 cep: '',
               });

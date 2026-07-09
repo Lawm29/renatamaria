@@ -24,8 +24,8 @@ export default function Footer() {
           <div className="text-center md:text-right">
             <p className="text-sm">Rua Trinta, 640 - Centro</p>
             <p className="text-sm">Barretos - SP</p>
-            <p className="text-sm mt-2 font-semibold">Retirada em Barretos</p>
-            <p className="text-sm">Entrega em todo o estado de São Paulo</p>
+            <p className="text-sm mt-2 font-semibold">Apenas retirada em Barretos</p>
+            <p className="text-sm">Entrega para todo o estado de São Paulo</p>
             <p className="text-sm mt-2">
               <a 
                 href="https://wa.me/5517981843759" 

@@ -11,7 +11,7 @@ interface OrderSummaryProps {
   bolosFalsos: BoloFalsoData[];
   doces: DoceSelecionado[];
   dados: FormData;
-  onConfirm: (method: 'whatsapp' | 'email') => void;
+  onConfirm: () => void;
   onBack: () => void;
 }
 
@@ -79,7 +79,7 @@ export default function OrderSummary({ bolos, bolosFalsos, doces, dados, onConfi
       )}
 
       <div className="bg-white rounded-xl p-4 border border-gray-200">
-        <h3 className="font-semibold text-gray-700 mb-3">Dados de Entrega</h3>
+        <h3 className="font-semibold text-gray-700 mb-3">Dados de Contato e Endereço</h3>
         <div className="text-sm space-y-1">
           <p><strong>Nome:</strong> {dados.nome}</p>
           <p><strong>WhatsApp:</strong> {dados.whatsapp}</p>
@@ -89,7 +89,7 @@ export default function OrderSummary({ bolos, bolosFalsos, doces, dados, onConfi
         </div>
       </div>
 
-      <div className="flex flex-col sm:flex-row justify-between gap-3 pt-4">
+      <div className="flex justify-between pt-4">
         <button
           type="button"
           onClick={onBack}
@@ -97,20 +97,12 @@ export default function OrderSummary({ bolos, bolosFalsos, doces, dados, onConfi
         >
           Voltar
         </button>
-        <div className="flex gap-3">
-          <button
-            onClick={() => onConfirm('email')}
-            className="flex-1 sm:flex-none px-6 py-3 rounded-full font-semibold bg-blue-500 text-white hover:bg-blue-600 transition-all"
-          >
-            📧 Email
-          </button>
-          <button
-            onClick={() => onConfirm('whatsapp')}
-            className="flex-1 sm:flex-none px-6 py-3 rounded-full font-semibold bg-green-500 text-white hover:bg-green-600 transition-all"
-          >
-            💬 WhatsApp
-          </button>
-        </div>
+        <button
+          onClick={onConfirm}
+          className="px-8 py-3 rounded-full font-semibold bg-green-500 text-white hover:bg-green-600 transition-all"
+        >
+          Finalizar Pedido
+        </button>
       </div>
     </div>
   );

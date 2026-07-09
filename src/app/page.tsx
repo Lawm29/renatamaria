@@ -46,7 +46,7 @@ export default function Home() {
             </p>
             <div className="mt-8 p-6 bg-[#b8f0ed]/10 rounded-xl">
               <p className="text-[#5f9ea0] font-semibold text-lg">📍 Rua Trinta, 640 - Centro, Barretos - SP</p>
-              <p className="text-gray-600 mt-2">Retirada em Barretos | Entrega em todo o estado de São Paulo</p>
+              <p className="text-gray-600 mt-2">Apenas retirada em Barretos | Entrega para todo o estado de São Paulo</p>
             </div>
           </div>
         </div>
