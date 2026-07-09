@@ -23,6 +23,7 @@ interface OrderData {
     nome: string;
     whatsapp: string;
     dataEntrega: string;
+    tipoLocal?: 'barretos' | 'outras' | null;
     rua: string;
     bairro: string;
     cidade: string;
@@ -32,56 +33,66 @@ interface OrderData {
 }
 
 function formatOrderEmail(data: OrderData): string {
-  let email = '<h2 style="color: #5f9ea0;">🎂 Pedido Renata Maria</h2>';
+  let email = '<h2 style="color: #5f9ea0;">Pedido Renata Maria</h2>';
 
-  if (data.bolos.length > 0) {
+  const bolos = data.bolos || [];
+  const bolosFalsos = data.bolosFalsos || [];
+  const doces = data.doces || [];
+
+  if (bolos.length > 0) {
     email += '<h3 style="color: #333;">Bolos:</h3>';
-    data.bolos.forEach((bolo, index) => {
-      const tipo = bolo.tipo === 'artistico' ? 'Bolo Artístico (comestível)' : 'Bolo';
+    bolos.forEach((bolo, index) => {
+      const tipo = bolo.tipo === 'artistico' ? 'Bolo Artistico (comestivel)' : 'Bolo';
       email += `
         <div style="margin-bottom: 15px; padding: 10px; background: #f9f9f9; border-radius: 8px;">
           <p><strong>${tipo} ${index + 1}:</strong></p>
-          <p>- Tamanho: ${bolo.tamanho}</p>
-          <p>- Recheio: ${bolo.recheio}</p>
-          <p>- Cobertura: ${bolo.cobertura}</p>
-          ${bolo.tipo === 'artistico' && bolo.descricao ? `<p>- Descrição: ${bolo.descricao}</p>` : ''}
+          <p>- Tamanho: ${bolo.tamanho || '-'}</p>
+          <p>- Recheio: ${bolo.recheio || '-'}</p>
+          <p>- Cobertura: ${bolo.cobertura || '-'}</p>
+          ${bolo.tipo === 'artistico' && bolo.descricao ? `<p>- Descricao: ${bolo.descricao}</p>` : ''}
           ${bolo.observacoes ? `<p><em>- Obs: ${bolo.observacoes}</em></p>` : ''}
         </div>
       `;
     });
   }
 
-  if (data.bolosFalsos.length > 0) {
-    email += '<h3 style="color: #333;">Bolos Falsos (Decoração):</h3>';
-    data.bolosFalsos.forEach((bolo, index) => {
+  if (bolosFalsos.length > 0) {
+    email += '<h3 style="color: #333;">Bolos Falsos (Decoracao):</h3>';
+    bolosFalsos.forEach((bolo, index) => {
       email += `
         <div style="margin-bottom: 15px; padding: 10px; background: #f9f9f9; border-radius: 8px;">
           <p><strong>Bolo Falso ${index + 1}:</strong></p>
-          <p>- Andares: ${bolo.andares}</p>
-          <p>- Descrição: ${bolo.descricao}</p>
+          <p>- Andares: ${bolo.andares || '-'}</p>
+          <p>- Descricao: ${bolo.descricao || '-'}</p>
           ${bolo.observacoes ? `<p><em>- Obs: ${bolo.observacoes}</em></p>` : ''}
         </div>
       `;
     });
   }
 
-  if (data.doces.length > 0) {
+  if (doces.length > 0) {
     email += '<h3 style="color: #333;">Doces:</h3>';
     email += '<div style="padding: 10px; background: #f9f9f9; border-radius: 8px;">';
-    data.doces.forEach((doce) => {
+    doces.forEach((doce) => {
       email += `<p>- ${doce.nome} x${doce.quantidade}</p>`;
     });
     email += '</div>';
   }
 
+  const isBarretos = data.formData.tipoLocal === 'barretos';
+  const enderecoFormatado = isBarretos
+    ? 'Retirada em Barretos-SP'
+    : `${data.formData.rua || '-'}, ${data.formData.bairro || '-'} - ${data.formData.cidade || '-'}/${data.formData.estado || 'SP'}`;
+
   email += `
-    <h3 style="color: #333; margin-top: 20px;">Dados de Contato e Endereço:</h3>
+    <h3 style="color: #333; margin-top: 20px;">Dados de Contato:</h3>
     <div style="padding: 10px; background: #f9f9f9; border-radius: 8px;">
       <p><strong>Nome:</strong> ${data.formData.nome}</p>
       <p><strong>WhatsApp:</strong> ${data.formData.whatsapp}</p>
-      <p><strong>Data:</strong> ${new Date(data.formData.dataEntrega).toLocaleDateString('pt-BR')}</p>
-      <p><strong>Endereço:</strong> ${data.formData.rua}, ${data.formData.bairro} - ${data.formData.cidade}/${data.formData.estado}</p>
-      <p><strong>CEP:</strong> ${data.formData.cep}</p>
+      <p><strong>Data:</strong> ${data.formData.dataEntrega ? new Date(data.formData.dataEntrega + 'T12:00:00').toLocaleDateString('pt-BR') : '-'}</p>
+      <p><strong>Tipo:</strong> ${isBarretos ? 'Retirada em Barretos' : 'Entrega'}</p>
+      ${!isBarretos ? `<p><strong>Endereco:</strong> ${enderecoFormatado}</p>` : ''}
+      ${!isBarretos && data.formData.cep ? `<p><strong>CEP:</strong> ${data.formData.cep}</p>` : ''}
     </div>
   `;
 
@@ -105,7 +116,7 @@ export async function POST(request: NextRequest) {
     await transporter.sendMail({
       from: `"Renata Maria - Pedidos" <${process.env.GMAIL_USER}>`,
       to: process.env.GMAIL_USER,
-      subject: `🎂 Novo Pedido - ${data.formData.nome}`,
+      subject: `Novo Pedido - ${data.formData.nome}`,
       html: emailHtml,
     });
 

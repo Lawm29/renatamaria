@@ -17,6 +17,8 @@ export interface DoceSelecionado {
 export default function DocesConfig({ onNext, onBack }: DocesConfigProps) {
   const [selecionados, setSelecionados] = useState<DoceSelecionado[]>([]);
   const [categoriaAtiva, setCategoriaAtiva] = useState('Tradicionais');
+  const [inputValues, setInputValues] = useState<Record<string, string>>({});
+  const [avisoMinimo, setAvisoMinimo] = useState<string | null>(null);
 
   const adicionarDoce = (nome: string, categoria: string) => {
     const exists = selecionados.find((d) => d.nome === nome);
@@ -31,12 +33,32 @@ export default function DocesConfig({ onNext, onBack }: DocesConfigProps) {
 
   const atualizarQuantidade = (nome: string, quantidade: number) => {
     if (quantidade < 25) {
-      removerDoce(nome);
       return;
     }
     setSelecionados(
       selecionados.map((d) => (d.nome === nome ? { ...d, quantidade } : d))
     );
+  };
+
+  const handleInputChange = (nome: string, value: string) => {
+    setInputValues({ ...inputValues, [nome]: value });
+  };
+
+  const handleInputBlur = (nome: string) => {
+    const value = inputValues[nome];
+    const numValue = parseInt(value || '', 10);
+
+    if (isNaN(numValue) || numValue < 25) {
+      setAvisoMinimo(nome);
+      const doce = selecionados.find((d) => d.nome === nome);
+      if (doce) {
+        setInputValues({ ...inputValues, [nome]: doce.quantidade.toString() });
+      }
+    } else {
+      setAvisoMinimo(null);
+      atualizarQuantidade(nome, numValue);
+      setInputValues({ ...inputValues, [nome]: numValue.toString() });
+    }
   };
 
   const categoriaAtual = doces.categorias.find((c) => c.nome === categoriaAtiva);
@@ -108,10 +130,9 @@ export default function DocesConfig({ onNext, onBack }: DocesConfigProps) {
                   <input
                     type="number"
                     min="25"
-                    value={doce.quantidade}
-                    onChange={(e) =>
-                      atualizarQuantidade(doce.nome, parseInt(e.target.value) || 25)
-                    }
+                    value={inputValues[doce.nome] ?? doce.quantidade}
+                    onChange={(e) => handleInputChange(doce.nome, e.target.value)}
+                    onBlur={() => handleInputBlur(doce.nome)}
                     className="w-16 text-center border border-gray-200 rounded-lg py-1"
                   />
                   <button
@@ -129,6 +150,9 @@ export default function DocesConfig({ onNext, onBack }: DocesConfigProps) {
                     ×
                   </button>
                 </div>
+                {avisoMinimo === doce.nome && (
+                  <p className="text-xs text-amber-600 mt-1">Mínimo 25 unidades</p>
+                )}
               </div>
             ))}
           </div>

@@ -98,7 +98,7 @@ export default function PedidoCard({ pedido, onStatusChange, onEdit, onDelete }:
         <div className="flex-1 min-w-0">
           <p className="font-semibold text-gray-800 truncate">{pedido.cliente.nome}</p>
           <div className="flex flex-wrap gap-1 mt-1">
-            {pedido.categorias.map((cat) => (
+            {(pedido.categorias || []).map((cat) => (
               <span
                 key={cat}
                 className="text-xs px-2 py-0.5 bg-[#b8f0ed]/20 text-[#5f9ea0] rounded-full"
@@ -172,10 +172,10 @@ export default function PedidoCard({ pedido, onStatusChange, onEdit, onDelete }:
             </div>
           </div>
 
-          {pedido.bolos.length > 0 && (
+          {(pedido.bolos || []).length > 0 && (
             <div className="mt-4">
               <h4 className="text-sm font-semibold text-gray-700 mb-2">Bolos</h4>
-              {pedido.bolos.map((bolo, index) => {
+              {(pedido.bolos || []).map((bolo, index) => {
                 const tamanhoInfo = getTamanhoInfo(bolo.tamanho);
                 return (
                   <div key={index} className="bg-gray-50 rounded-lg p-3 mb-2">
@@ -197,10 +197,10 @@ export default function PedidoCard({ pedido, onStatusChange, onEdit, onDelete }:
             </div>
           )}
 
-          {pedido.bolosFalsos.length > 0 && (
+          {(pedido.bolosFalsos || []).length > 0 && (
             <div className="mt-4">
               <h4 className="text-sm font-semibold text-gray-700 mb-2">Bolos Falsos</h4>
-              {pedido.bolosFalsos.map((bolo, index) => (
+              {(pedido.bolosFalsos || []).map((bolo, index) => (
                 <div key={index} className="bg-gray-50 rounded-lg p-3 mb-2">
                   <p className="text-sm font-medium">Bolo Falso {index + 1}</p>
                   <p className="text-xs text-gray-600">Andares: {bolo.andares}</p>
@@ -213,11 +213,11 @@ export default function PedidoCard({ pedido, onStatusChange, onEdit, onDelete }:
             </div>
           )}
 
-          {pedido.doces.length > 0 && (
+          {(pedido.doces || []).length > 0 && (
             <div className="mt-4">
               <h4 className="text-sm font-semibold text-gray-700 mb-2">Doces</h4>
               <div className="bg-gray-50 rounded-lg p-3">
-                {pedido.doces.map((doce) => (
+                {(pedido.doces || []).map((doce) => (
                   <p key={doce.nome} className="text-xs text-gray-600">
                     {doce.nome} x{doce.quantidade}
                   </p>

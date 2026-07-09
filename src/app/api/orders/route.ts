@@ -52,10 +52,10 @@ export async function POST(request: NextRequest) {
           ? 'Barretos - Retirada'
           : `${data.formData.rua}, ${data.formData.bairro} - ${data.formData.cidade}/${data.formData.estado} - CEP: ${data.formData.cep}`,
       },
-      categorias: data.categorias,
-      bolos: data.bolos,
-      bolosFalsos: data.bolosFalsos,
-      doces: data.doces,
+      categorias: data.categorias || [],
+      bolos: data.bolos || [],
+      bolosFalsos: data.bolosFalsos || [],
+      doces: data.doces || [],
       status: {
         contatoFeito: false,
         pago: false,
