@@ -35,19 +35,34 @@ export default function Home() {
       {/* Sobre Nós */}
       <section className="py-12 bg-white">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-3xl font-bold text-[#5f9ea0] mb-6">Sobre Nós</h2>
-            <p className="text-gray-600 leading-relaxed text-lg">
-              Somos uma confeitaria artesanal e familiar em Barretos-SP, comandada por mãe e filha. 
-              Nossos doces refletem intimidade, carinho, ingredientes de alta qualidade e elevado nível artístico.
-            </p>
-            <p className="text-gray-600 leading-relaxed text-lg mt-4">
-              Cada bolo e doce é feito com amor e dedicação, transformando seus momentos especiais 
-              em memórias doces e inesquecíveis.
-            </p>
-            <div className="mt-8 p-6 bg-[#b8f0ed]/10 rounded-xl">
-              <p className="text-[#5f9ea0] font-semibold text-lg">📍 Rua Trinta, 640 - Centro, Barretos - SP</p>
-              <p className="text-gray-600 mt-2">Apenas retirada em Barretos | Entrega para todo o estado de São Paulo</p>
+          <div className="max-w-5xl mx-auto">
+            <div className="flex flex-col md:flex-row items-center gap-8">
+              <div className="w-full md:w-2/5">
+                <div className="relative rounded-2xl overflow-hidden shadow-lg">
+                  <Image
+                    src="/images/sobre-nos/foto.png"
+                    alt="Renata Maria - Confeitaria"
+                    width={500}
+                    height={600}
+                    className="w-full h-auto object-cover"
+                  />
+                </div>
+              </div>
+              <div className="w-full md:w-3/5 text-center md:text-left">
+                <h2 className="text-3xl font-bold text-[#5f9ea0] mb-6">Sobre Nós</h2>
+                <p className="text-gray-600 leading-relaxed text-lg">
+                  Somos uma confeitaria artesanal e familiar em Barretos-SP, comandada por mãe e filha.
+                  Nossos doces refletem intimidade, carinho, ingredientes de alta qualidade e elevado nível artístico.
+                </p>
+                <p className="text-gray-600 leading-relaxed text-lg mt-4">
+                  Cada bolo e doce é feito com amor e dedicação, transformando seus momentos especiais
+                  em memórias doces e inesquecíveis.
+                </p>
+                <div className="mt-8 p-6 bg-[#b8f0ed]/10 rounded-xl">
+                  <p className="text-[#5f9ea0] font-semibold text-lg">📍 Rua Trinta, 640 - Centro, Barretos - SP</p>
+                  <p className="text-gray-600 mt-2">Apenas retirada em Barretos | Entrega para todo o estado de São Paulo</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
