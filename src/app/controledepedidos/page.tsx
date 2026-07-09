@@ -58,6 +58,7 @@ export default function ControlePedidosPage() {
     const savedAuth = localStorage.getItem('adminAuth');
     if (savedAuth === 'true') {
       setIsAuthenticated(true);
+      setIsLoadingAuth(false);
       fetchPedidos();
     } else {
       setIsLoadingAuth(false);
