@@ -50,8 +50,13 @@ export default function ControlePedidosPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [editingPedido, setEditingPedido] = useState<Pedido | null>(null);
   const [editForm, setEditForm] = useState({
+    nome: '',
+    whatsapp: '',
     dataEntrega: '',
     endereco: '',
+    bolos: [] as Array<{ tipo: string; tamanho: string; recheio: string; cobertura: string; descricao: string; observacoes: string }>,
+    bolosFalsos: [] as Array<{ andares: number; descricao: string; observacoes: string }>,
+    doces: [] as Array<{ nome: string; categoria: string; quantidade: number }>,
   });
 
   useEffect(() => {
@@ -129,8 +134,28 @@ export default function ControlePedidosPage() {
   const handleEdit = (pedido: Pedido) => {
     setEditingPedido(pedido);
     setEditForm({
+      nome: pedido.cliente.nome,
+      whatsapp: pedido.cliente.whatsapp,
       dataEntrega: pedido.dataEntrega.split('T')[0],
       endereco: pedido.cliente.endereco,
+      bolos: (pedido.bolos || []).map((b) => ({
+        tipo: b.tipo,
+        tamanho: b.tamanho,
+        recheio: b.recheio,
+        cobertura: b.cobertura,
+        descricao: b.descricao || '',
+        observacoes: b.observacoes || '',
+      })),
+      bolosFalsos: (pedido.bolosFalsos || []).map((b) => ({
+        andares: b.andares,
+        descricao: b.descricao || '',
+        observacoes: b.observacoes || '',
+      })),
+      doces: (pedido.doces || []).map((d) => ({
+        nome: d.nome,
+        categoria: (d as Record<string, unknown>).categoria as string || '',
+        quantidade: d.quantidade,
+      })),
     });
   };
 
@@ -147,9 +172,13 @@ export default function ControlePedidosPage() {
           id: editingPedido.id,
           dataEntrega: editForm.dataEntrega,
           cliente: {
-            ...editingPedido.cliente,
+            nome: editForm.nome,
+            whatsapp: editForm.whatsapp,
             endereco: editForm.endereco,
           },
+          bolos: editForm.bolos,
+          bolosFalsos: editForm.bolosFalsos,
+          doces: editForm.doces,
         }),
       });
 
@@ -159,7 +188,14 @@ export default function ControlePedidosPage() {
             ? {
                 ...p,
                 dataEntrega: editForm.dataEntrega,
-                cliente: { ...p.cliente, endereco: editForm.endereco },
+                cliente: {
+                  nome: editForm.nome,
+                  whatsapp: editForm.whatsapp,
+                  endereco: editForm.endereco,
+                },
+                bolos: editForm.bolos,
+                bolosFalsos: editForm.bolosFalsos,
+                doces: editForm.doces,
               }
             : p
         )
@@ -369,44 +405,262 @@ export default function ControlePedidosPage() {
       </div>
 
       {editingPedido && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-xl">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+          <div className="bg-white rounded-2xl p-6 max-w-2xl w-full shadow-xl my-8">
             <h3 className="text-lg font-bold text-gray-800 mb-4">Editar Pedido</h3>
-            <p className="text-sm text-gray-600 mb-4">
-              <strong>{editingPedido.cliente.nome}</strong>
-            </p>
 
-            <div className="space-y-4">
+            <div className="space-y-6 max-h-[70vh] overflow-y-auto pr-2">
+              {/* Dados do Cliente */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Data de Entrega
-                </label>
-                <input
-                  type="date"
-                  value={editForm.dataEntrega}
-                  onChange={(e) =>
-                    setEditForm({ ...editForm, dataEntrega: e.target.value })
-                  }
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#b8f0ed] focus:border-transparent"
-                />
+                <h4 className="text-sm font-semibold text-gray-700 mb-3 uppercase tracking-wide">Dados do Cliente</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">Nome</label>
+                    <input
+                      type="text"
+                      value={editForm.nome}
+                      onChange={(e) => setEditForm({ ...editForm, nome: e.target.value })}
+                      className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#b8f0ed] focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">WhatsApp</label>
+                    <input
+                      type="text"
+                      value={editForm.whatsapp}
+                      onChange={(e) => setEditForm({ ...editForm, whatsapp: e.target.value })}
+                      className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#b8f0ed] focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">Data de Entrega</label>
+                    <input
+                      type="date"
+                      value={editForm.dataEntrega}
+                      onChange={(e) => setEditForm({ ...editForm, dataEntrega: e.target.value })}
+                      className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#b8f0ed] focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">Endereço</label>
+                    <input
+                      type="text"
+                      value={editForm.endereco}
+                      onChange={(e) => setEditForm({ ...editForm, endereco: e.target.value })}
+                      className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#b8f0ed] focus:border-transparent"
+                    />
+                  </div>
+                </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Endereço
-                </label>
-                <input
-                  type="text"
-                  value={editForm.endereco}
-                  onChange={(e) =>
-                    setEditForm({ ...editForm, endereco: e.target.value })
-                  }
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#b8f0ed] focus:border-transparent"
-                />
-              </div>
+              {/* Bolos */}
+              {editForm.bolos.length > 0 && (
+                <div>
+                  <h4 className="text-sm font-semibold text-gray-700 mb-3 uppercase tracking-wide">Bolos</h4>
+                  <div className="space-y-3">
+                    {editForm.bolos.map((bolo, i) => (
+                      <div key={i} className="bg-gray-50 rounded-lg p-3 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-semibold text-[#5f9ea0]">
+                            {bolo.tipo === 'artistico' ? 'Bolo Artístico' : 'Bolo'} {i + 1}
+                          </span>
+                          <button
+                            onClick={() => {
+                              const newBolos = editForm.bolos.filter((_, idx) => idx !== i);
+                              setEditForm({ ...editForm, bolos: newBolos });
+                            }}
+                            className="text-red-400 hover:text-red-600 text-xs"
+                          >
+                            ✕ Remover
+                          </button>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                          <div>
+                            <label className="block text-xs text-gray-500 mb-1">Tamanho</label>
+                            <select
+                              value={bolo.tamanho}
+                              onChange={(e) => {
+                                const newBolos = [...editForm.bolos];
+                                newBolos[i] = { ...newBolos[i], tamanho: e.target.value };
+                                setEditForm({ ...editForm, bolos: newBolos });
+                              }}
+                              className="w-full p-2 border border-gray-300 rounded-lg text-sm"
+                            >
+                              <option value="P">P</option>
+                              <option value="M">M</option>
+                              <option value="G">G</option>
+                              <option value="GG">GG</option>
+                              <option value="EG">EG</option>
+                            </select>
+                          </div>
+                          <div>
+                            <label className="block text-xs text-gray-500 mb-1">Recheio</label>
+                            <input
+                              type="text"
+                              value={bolo.recheio}
+                              onChange={(e) => {
+                                const newBolos = [...editForm.bolos];
+                                newBolos[i] = { ...newBolos[i], recheio: e.target.value };
+                                setEditForm({ ...editForm, bolos: newBolos });
+                              }}
+                              className="w-full p-2 border border-gray-300 rounded-lg text-sm"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs text-gray-500 mb-1">Cobertura</label>
+                            <input
+                              type="text"
+                              value={bolo.cobertura}
+                              onChange={(e) => {
+                                const newBolos = [...editForm.bolos];
+                                newBolos[i] = { ...newBolos[i], cobertura: e.target.value };
+                                setEditForm({ ...editForm, bolos: newBolos });
+                              }}
+                              className="w-full p-2 border border-gray-300 rounded-lg text-sm"
+                            />
+                          </div>
+                        </div>
+                        {bolo.tipo === 'artistico' && (
+                          <div>
+                            <label className="block text-xs text-gray-500 mb-1">Descrição</label>
+                            <textarea
+                              value={bolo.descricao}
+                              onChange={(e) => {
+                                const newBolos = [...editForm.bolos];
+                                newBolos[i] = { ...newBolos[i], descricao: e.target.value };
+                                setEditForm({ ...editForm, bolos: newBolos });
+                              }}
+                              rows={2}
+                              className="w-full p-2 border border-gray-300 rounded-lg text-sm"
+                            />
+                          </div>
+                        )}
+                        <div>
+                          <label className="block text-xs text-gray-500 mb-1">Observações</label>
+                          <input
+                            type="text"
+                            value={bolo.observacoes}
+                            onChange={(e) => {
+                              const newBolos = [...editForm.bolos];
+                              newBolos[i] = { ...newBolos[i], observacoes: e.target.value };
+                              setEditForm({ ...editForm, bolos: newBolos });
+                            }}
+                            className="w-full p-2 border border-gray-300 rounded-lg text-sm"
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Bolos Falsos */}
+              {editForm.bolosFalsos.length > 0 && (
+                <div>
+                  <h4 className="text-sm font-semibold text-gray-700 mb-3 uppercase tracking-wide">Bolos Falsos</h4>
+                  <div className="space-y-3">
+                    {editForm.bolosFalsos.map((bolo, i) => (
+                      <div key={i} className="bg-gray-50 rounded-lg p-3 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-semibold text-[#5f9ea0]">Bolo Falso {i + 1}</span>
+                          <button
+                            onClick={() => {
+                              const newFalsos = editForm.bolosFalsos.filter((_, idx) => idx !== i);
+                              setEditForm({ ...editForm, bolosFalsos: newFalsos });
+                            }}
+                            className="text-red-400 hover:text-red-600 text-xs"
+                          >
+                            ✕ Remover
+                          </button>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                          <div>
+                            <label className="block text-xs text-gray-500 mb-1">Andares</label>
+                            <select
+                              value={bolo.andares}
+                              onChange={(e) => {
+                                const newFalsos = [...editForm.bolosFalsos];
+                                newFalsos[i] = { ...newFalsos[i], andares: parseInt(e.target.value) };
+                                setEditForm({ ...editForm, bolosFalsos: newFalsos });
+                              }}
+                              className="w-full p-2 border border-gray-300 rounded-lg text-sm"
+                            >
+                              <option value={1}>1</option>
+                              <option value={2}>2</option>
+                              <option value={3}>3</option>
+                              <option value={4}>4</option>
+                              <option value={5}>5</option>
+                            </select>
+                          </div>
+                          <div className="sm:col-span-2">
+                            <label className="block text-xs text-gray-500 mb-1">Descrição</label>
+                            <input
+                              type="text"
+                              value={bolo.descricao}
+                              onChange={(e) => {
+                                const newFalsos = [...editForm.bolosFalsos];
+                                newFalsos[i] = { ...newFalsos[i], descricao: e.target.value };
+                                setEditForm({ ...editForm, bolosFalsos: newFalsos });
+                              }}
+                              className="w-full p-2 border border-gray-300 rounded-lg text-sm"
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <label className="block text-xs text-gray-500 mb-1">Observações</label>
+                          <input
+                            type="text"
+                            value={bolo.observacoes}
+                            onChange={(e) => {
+                              const newFalsos = [...editForm.bolosFalsos];
+                              newFalsos[i] = { ...newFalsos[i], observacoes: e.target.value };
+                              setEditForm({ ...editForm, bolosFalsos: newFalsos });
+                            }}
+                            className="w-full p-2 border border-gray-300 rounded-lg text-sm"
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Doces */}
+              {editForm.doces.length > 0 && (
+                <div>
+                  <h4 className="text-sm font-semibold text-gray-700 mb-3 uppercase tracking-wide">Doces</h4>
+                  <div className="space-y-2">
+                    {editForm.doces.map((doce, i) => (
+                      <div key={i} className="flex items-center gap-3 bg-gray-50 rounded-lg p-3">
+                        <span className="flex-1 text-sm">{doce.nome}</span>
+                        <input
+                          type="number"
+                          min="1"
+                          value={doce.quantidade}
+                          onChange={(e) => {
+                            const newDoces = [...editForm.doces];
+                            newDoces[i] = { ...newDoces[i], quantidade: parseInt(e.target.value) || 1 };
+                            setEditForm({ ...editForm, doces: newDoces });
+                          }}
+                          className="w-20 text-center border border-gray-300 rounded-lg py-1 text-sm"
+                        />
+                        <button
+                          onClick={() => {
+                            const newDoces = editForm.doces.filter((_, idx) => idx !== i);
+                            setEditForm({ ...editForm, doces: newDoces });
+                          }}
+                          className="text-red-400 hover:text-red-600 text-xs"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
-            <div className="flex gap-3 mt-6">
+            <div className="flex gap-3 mt-6 pt-4 border-t border-gray-200">
               <button
                 onClick={() => setEditingPedido(null)}
                 className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
