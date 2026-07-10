@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   title: "Renata Maria - Bolos e Doces Finos",
   description: "Confeitaria artesanal e familiar em Barretos-SP. Bolos personalizados e doces finos para sua ocasião especial.",
   icons: {
-    icon: '/images/logo.png',
+    icon: '/favicon.ico',
   },
 };
 
